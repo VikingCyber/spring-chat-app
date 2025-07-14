@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.viking.spring_chat.domain.User;
+import com.viking.spring_chat.Entity.User;
 import com.viking.spring_chat.dto.ApiResponse;
 import com.viking.spring_chat.dto.JwtResponse;
 import com.viking.spring_chat.dto.LoginRequest;
@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
     private final UserService userService;
 
     public AuthController(UserService userService) {
@@ -31,7 +32,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> registerUser(@Valid @RequestBody RegistrationRequest request) {
-        // возможо пригодится позже
         User savedUser = userService.registerNewUser(request);
         UserResponse userResponse = new UserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail());
         ApiResponse<UserResponse> response = new ApiResponse<>(

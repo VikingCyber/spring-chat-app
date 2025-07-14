@@ -1,0 +1,263 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: viking
+      changes:
+        - createTable:
+            tableName: chat_room_type
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+        - insert:
+            tableName: chat_room_type
+            columns:
+              - column: { name: name, value: 'PRIVATE' }
+              - column: { name: description, value: 'Личный чат между двумя пользователями' }
+        - insert:
+            tableName: chat_room_type
+            columns:
+              - column: { name: name, value: 'GROUP' }
+              - column: { name: description, value: 'Групповой чат с несколькими участниками' }
+        - insert:
+            tableName: chat_room_type
+            columns:
+              - column: { name: name, value: 'CHANNEL' }
+              - column: { name: description, value: 'Канал с односторонней рассылкой сообщений' }
+
+  - changeSet:
+      id: 2
+      author: viking
+      changes:
+        - createTable:
+            tableName: chat_room
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: avatar_url
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: chat_room
+            baseColumnNames: type_id
+            referencedTableName: chat_room_type
+            referencedColumnNames: id
+            constraintName: fk_chat_room_type
+
+  - changeSet:
+      id: 3
+      author: viking
+      changes:
+        - createTable:
+            tableName: user_chat_room
+            columns:
+              - column:
+                  name: chat_room_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: user_chat_room
+            baseColumnNames: chat_room_id
+            referencedTableName: chat_room
+            referencedColumnNames: id
+            constraintName: fk_user_chat_room_room
+        - addForeignKeyConstraint:
+            baseTableName: user_chat_room
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_user_chat_room_user
+        - addPrimaryKey:
+            tableName: user_chat_room
+            columnNames: chat_room_id, user_id
+            constraintName: pk_user_chat_room
+
+  - changeSet:
+      id: 4
+      author: viking
+      changes:
+        - createTable:
+            tableName: chat_message
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: room_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sender_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: chat_message
+            baseColumnNames: room_id
+            referencedTableName: chat_room
+            referencedColumnNames: id
+            constraintName: fk_chat_message_room
+        - addForeignKeyConstraint:
+            baseTableName: chat_message
+            baseColumnNames: sender_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_chat_message_sender
+
+  - changeSet:
+      id: 5
+      author: viking
+      changes:
+        - createTable:
+            tableName: chat_attachment
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: message_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mime_type
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: metadata
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: chat_attachment
+            baseColumnNames: message_id
+            referencedTableName: chat_message
+            referencedColumnNames: id
+            constraintName: fk_chat_attachment_message
+
+  - changeSet:
+      id: 6
+      author: viking
+      changes:
+      - sql:
+          dbms: postgresql
+          splitStatements: false
+          stripComments: true
+          sql: |
+            CREATE OR REPLACE FUNCTION update_updated_at_column()
+            RETURNS TRIGGER AS $$
+            BEGIN
+              NEW.updated_at = NOW();
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+  - changeSet:
+      id: 8
+      author: viking
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TRIGGER trg_update_updated_at_chat_room
+              BEFORE UPDATE ON chat_room
+              FOR EACH ROW
+              EXECUTE FUNCTION update_updated_at_column();
+
+              CREATE TRIGGER trg_update_updated_at_chat_message
+              BEFORE UPDATE ON chat_message
+              FOR EACH ROW
+              EXECUTE FUNCTION update_updated_at_column();
+
+              CREATE TRIGGER trg_update_updated_at_chat_attachment
+              BEFORE UPDATE ON chat_attachment
+              FOR EACH ROW
+              EXECUTE FUNCTION update_updated_at_column();

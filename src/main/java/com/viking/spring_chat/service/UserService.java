@@ -7,12 +7,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.viking.spring_chat.domain.Role;
-import com.viking.spring_chat.domain.User;
+import com.viking.spring_chat.Entity.User;
 import com.viking.spring_chat.dto.LoginRequest;
 import com.viking.spring_chat.dto.RegistrationRequest;
 import com.viking.spring_chat.exception.EmailAlreadyExistsException;
 import com.viking.spring_chat.exception.UsernameAlreadyExistsException;
+import com.viking.spring_chat.mapper.UserMapper;
 import com.viking.spring_chat.repository.UserRepository;
 import com.viking.spring_chat.security.CustomUserDetailsService;
 import com.viking.spring_chat.security.jwt.JwtUtil;
@@ -29,15 +29,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
+    private final UserMapper userMapper;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
                     CustomUserDetailsService customUserDetailsService, JwtUtil jwtUtil,
-                    LoginAttemptService loginAttemptService) {
+                    LoginAttemptService loginAttemptService, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtUtil = jwtUtil;
         this.loginAttemptService = loginAttemptService;
+        this.userMapper = userMapper;
     }
 
     public User registerNewUser(RegistrationRequest request) {
@@ -47,13 +49,7 @@ public class UserService {
         if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new UsernameAlreadyExistsException("Пользователь с username " + request.username() + " уже существует");
         }
-        User user = User.builder()
-                .username(request.username())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .role(Role.ROLE_USER)
-                .enabled(true)
-                .build();
+        User user = userMapper.toEntity(request, passwordEncoder);
         return userRepository.save(user);
     }
 

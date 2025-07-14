@@ -85,6 +85,17 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, "Ошибка сервера: " + ex.getMessage(), request);
     }   
 
+    // 404
+    @ExceptionHandler(ChatRoomTypeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleChatRoomTypeNotFound(ChatRoomTypeNotFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, "Тип комнаты не найден: " + ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(ChatRoomNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleChatRoomNotFound(ChatRoomNotFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, "Комната не найдена", request);
+    }
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(Exception ex, HttpStatus status, String message, HttpServletRequest request) {
         ErrorResponse response = new ErrorResponse(
             status.value(), 

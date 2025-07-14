@@ -1,0 +1,14 @@
+databaseChangeLog:
+    # Индекс для ускорения запросов на получение истории сообщений по комнате и времени содания
+  - changeSet:
+      id: 004
+      author: viking
+      changes:
+        - createIndex:
+            indexName: idx_chat_message_room_created_at
+            tableName: chat_message
+            columns:
+              - column:
+                  name: room_id
+              - column:
+                  name: created_at
