@@ -2,7 +2,7 @@ package com.viking.spring_chat.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.viking.spring_chat.Entity.User;
+import com.viking.spring_chat.entity.User;
 
 import java.util.Optional;
 

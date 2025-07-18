@@ -7,13 +7,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.viking.spring_chat.Entity.User;
+import com.viking.spring_chat.dto.JwtResponse;
 import com.viking.spring_chat.dto.LoginRequest;
 import com.viking.spring_chat.dto.RegistrationRequest;
+import com.viking.spring_chat.entity.User;
 import com.viking.spring_chat.exception.EmailAlreadyExistsException;
 import com.viking.spring_chat.exception.UsernameAlreadyExistsException;
 import com.viking.spring_chat.mapper.UserMapper;
 import com.viking.spring_chat.repository.UserRepository;
+import com.viking.spring_chat.security.CustomUserDetails;
 import com.viking.spring_chat.security.CustomUserDetailsService;
 import com.viking.spring_chat.security.jwt.JwtUtil;
 
@@ -53,7 +55,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public String authenticateAndGetToken(LoginRequest loginRequest) {
+    public JwtResponse authenticateAndGetToken(LoginRequest loginRequest) {
         String email = loginRequest.email();
 
         if (loginAttemptService.isBlocked(email)) {
@@ -72,7 +74,9 @@ public class UserService {
 
             log.info("Пользователь {} успешно вошёл", email);
             loginAttemptService.loginSucceeded(email);
-            return jwtUtil.generateToken(userDetails);
+            String token = jwtUtil.generateToken(userDetails);
+            String username = ((CustomUserDetails) userDetails).getUser().getUsername(); 
+            return new JwtResponse(token, username);
 
         } catch (UsernameNotFoundException ex) {
             log.warn("Неудачная попытка входа: пользователь с email {} не найден", email);

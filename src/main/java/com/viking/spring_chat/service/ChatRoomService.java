@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.viking.spring_chat.Entity.ChatRoom;
-import com.viking.spring_chat.Entity.ChatRoomType;
 import com.viking.spring_chat.dto.ChatRoomRequest;
 import com.viking.spring_chat.dto.ChatRoomResponse;
+import com.viking.spring_chat.entity.ChatRoom;
+import com.viking.spring_chat.entity.ChatRoomType;
 import com.viking.spring_chat.exception.ChatRoomNotFoundException;
 import com.viking.spring_chat.exception.ChatRoomTypeNotFoundException;
 import com.viking.spring_chat.mapper.ChatRoomMapper;

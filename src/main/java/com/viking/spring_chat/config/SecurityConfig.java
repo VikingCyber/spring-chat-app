@@ -43,8 +43,15 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register", "/ws-chat").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(
+        "/api/auth/login",
+                    "/api/auth/register",
+                    "/ws-chat",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/webjars/**").permitAll()
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // наш фильтр перед стандартным
 

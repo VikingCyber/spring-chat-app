@@ -10,11 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.viking.spring_chat.Entity.ChatMessage;
-import com.viking.spring_chat.Entity.ChatRoom;
-import com.viking.spring_chat.Entity.User;
 import com.viking.spring_chat.dto.ChatMessageRequest;
 import com.viking.spring_chat.dto.ChatMessageResponse;
+import com.viking.spring_chat.entity.ChatMessage;
+import com.viking.spring_chat.entity.ChatRoom;
+import com.viking.spring_chat.entity.User;
 import com.viking.spring_chat.exception.ChatRoomNotFoundException;
 import com.viking.spring_chat.mapper.ChatMessageMapper;
 import com.viking.spring_chat.repository.ChatMessageRepository;

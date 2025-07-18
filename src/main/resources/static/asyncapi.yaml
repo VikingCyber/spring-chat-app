@@ -1,0 +1,107 @@
+asyncapi: 3.0.0
+info:
+  title: Chat WebSocket API
+  version: 1.0.0
+  description: >
+    Асинхронный API для обмена сообщениями в чат-комнатах через WebSocket и
+    протокол STOMP.
+
+    Используется в проекте Spring Chat App.
+servers:
+  local:
+    host: 'localhost:8080'
+    pathname: /ws-chat
+    protocol: stomp
+    description: Локальный WebSocket сервер
+channels:
+  /app/chat.sendMessage:
+    address: /app/chat.sendMessage
+    messages:
+      sendMessage.message:
+        $ref: '#/components/messages/ChatMessageRequest'
+    description: Клиент отправляет сообщение в комнату
+  '/topic/chat/{roomId}':
+    address: '/topic/chat/{roomId}'
+    messages:
+      receiveMessage.message:
+        $ref: '#/components/messages/ChatMessageResponse'
+    description: Сервер рассылает сообщение всем подписанным клиентам комнаты
+    parameters:
+      roomId:
+        description: ID комнаты
+operations:
+  sendMessage:
+    action: receive
+    channel:
+      $ref: '#/channels/~1app~1chat.sendMessage'
+    summary: Отправить сообщение
+    messages:
+      - $ref: '#/channels/~1app~1chat.sendMessage/messages/sendMessage.message'
+  receiveMessage:
+    action: send
+    channel:
+      $ref: '#/channels/~1topic~1chat~1{roomId}'
+    summary: Получить сообщение из комнаты
+    messages:
+      - $ref: '#/channels/~1topic~1chat~1{roomId}/messages/receiveMessage.message'
+components:
+  messages:
+    ChatMessageRequest:
+      name: ChatMessageRequest
+      title: Запрос сообщения
+      summary: 'Сообщение, отправленное пользователем'
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ChatMessageRequest'
+    ChatMessageResponse:
+      name: ChatMessageResponse
+      title: Ответ сообщения
+      summary: 'Сообщение, полученное от сервера'
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ChatMessageResponse'
+  schemas:
+    ChatMessageRequest:
+      type: object
+      required:
+        - roomId
+        - content
+      properties:
+        roomId:
+          type: integer
+          description: ID комнаты
+          example: 1
+        content:
+          type: string
+          description: Текст сообщения
+          example: 'Привет, мир!'
+    ChatMessageResponse:
+      type: object
+      required:
+        - messageId
+        - roomId
+        - sender
+        - content
+        - timestamp
+      properties:
+        messageId:
+          type: integer
+          description: Уникальный ID сообщения
+          example: 42
+        roomId:
+          type: integer
+          description: ID комнаты
+          example: 1
+        sender:
+          type: string
+          description: Имя отправителя
+          example: tuser
+        content:
+          type: string
+          description: Содержимое сообщения
+          example: 'Привет, мир!'
+        timestamp:
+          type: string
+          format: date-time
+          description: Время отправки
+          example: '2025-07-18T15:00:00'

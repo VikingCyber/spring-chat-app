@@ -23,7 +23,7 @@ public class ChatWebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatMessageService chatMessageService;
 
-    @MessageMapping("/chat.sendMessage") // клиент шлёт сюда
+    @MessageMapping("/chat.sendMessage")
     public void sendMessage(@Payload ChatMessageRequest request,
                             Principal principal) {
         log.info("Получено сообщение от {} в комнату {}: {}", principal.getName(), request.getRoomId(), request.getContent());

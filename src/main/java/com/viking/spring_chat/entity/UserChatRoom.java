@@ -1,4 +1,4 @@
-package com.viking.spring_chat.Entity;
+package com.viking.spring_chat.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;

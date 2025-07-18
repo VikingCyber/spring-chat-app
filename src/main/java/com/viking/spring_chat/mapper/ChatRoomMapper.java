@@ -2,11 +2,11 @@ package com.viking.spring_chat.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.viking.spring_chat.Entity.ChatRoom;
-import com.viking.spring_chat.Entity.ChatRoomType;
 import com.viking.spring_chat.dto.ChatRoomRequest;
 import com.viking.spring_chat.dto.ChatRoomResponse;
 import com.viking.spring_chat.dto.ChatRoomTypeResponse;
+import com.viking.spring_chat.entity.ChatRoom;
+import com.viking.spring_chat.entity.ChatRoomType;
 
 @Component
 public class ChatRoomMapper {

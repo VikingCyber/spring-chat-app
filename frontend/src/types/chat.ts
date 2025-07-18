@@ -11,5 +11,5 @@ export type ChatMessage = {
     roomId: number;
     sender: string;
     content: string;
-    sentAt: string;
+    createdAt: string;
 };

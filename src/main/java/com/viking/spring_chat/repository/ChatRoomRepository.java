@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.viking.spring_chat.Entity.ChatRoom;
+import com.viking.spring_chat.entity.ChatRoom;
 
 
 @Repository

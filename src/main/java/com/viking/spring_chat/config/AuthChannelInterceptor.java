@@ -9,6 +9,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
+import com.viking.spring_chat.exception.WebSocketAuthnticationException;
 import com.viking.spring_chat.security.StompPrincipal;
 import com.viking.spring_chat.security.jwt.JwtUtil;
 
@@ -26,13 +27,12 @@ public class AuthChannelInterceptor implements ChannelInterceptor{
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
             String authHeader = accessor.getFirstNativeHeader("Authorization");
-            System.out.println("Auth header in connect: " + authHeader);
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                throw new IllegalArgumentException("No valid Authorization header");
+                throw new WebSocketAuthnticationException("No valid Authorization header");
             }
             String token = authHeader.substring(7);
             if (!jwtUtil.validateToken(token)) {
-                throw new IllegalArgumentException("Invalid JWT token");
+                throw new WebSocketAuthnticationException("Invalid JWT token");
             }
             String username = jwtUtil.getUsernameFromToken(token);
             accessor.setUser(new StompPrincipal(username));

@@ -7,6 +7,7 @@ export interface ApiResponse<T> {
 
 export interface JwtResponse {
     token: string;
+    username: string;
 }
 
 export interface UserResponse {

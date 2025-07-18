@@ -1,4 +1,4 @@
-package com.viking.spring_chat.Entity;
+package com.viking.spring_chat.entity;
 
 public enum RoomRole {
     ROOM_ROLE_USER,

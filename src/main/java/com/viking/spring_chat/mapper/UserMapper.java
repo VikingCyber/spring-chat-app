@@ -3,9 +3,9 @@ package com.viking.spring_chat.mapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.viking.spring_chat.Entity.GlobalRole;
-import com.viking.spring_chat.Entity.User;
 import com.viking.spring_chat.dto.RegistrationRequest;
+import com.viking.spring_chat.entity.GlobalRole;
+import com.viking.spring_chat.entity.User;
 
 @Component
 public class UserMapper {

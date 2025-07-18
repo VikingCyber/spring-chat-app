@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
-import com.viking.spring_chat.Entity.ChatMessage;
-import com.viking.spring_chat.Entity.ChatRoom;
-import com.viking.spring_chat.Entity.User;
 import com.viking.spring_chat.dto.ChatMessageRequest;
 import com.viking.spring_chat.dto.ChatMessageResponse;
+import com.viking.spring_chat.entity.ChatMessage;
+import com.viking.spring_chat.entity.ChatRoom;
+import com.viking.spring_chat.entity.User;
 
 @Component
 public class ChatMessageMapper {
